@@ -20,6 +20,9 @@ exports.listParser = ($) => {
 
 exports.postParser = ($, postId) => {
   const $authorNode = $('.topic-doc > h3 > .from > a');
+  if ($authorNode.length === 0) {
+    return Promise.reject();
+  }
   const authorId = $authorNode.attr('href').match(/people\/([a-zA-Z0-9]+)\//)[1];
   const title = $('#content > h1').text();
   const content = $('#link-report').html();

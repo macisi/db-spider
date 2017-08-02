@@ -18,7 +18,11 @@ class DB {
     return this.redis.hmget(`user:${uid}`);
   }
   getPost(postId) {
-    return this.redis.hmget(`post:${postId}`);
+    return new Promise(resolve => {
+      this.redis.hgetall(`post:${postId}`, (err, res) => {
+        resolve(res);
+      });
+    })
   }
   setUser(uid, userInfo) {
     console.log(uid, DB.flattenObj(userInfo));
@@ -30,6 +34,13 @@ class DB {
   }
   insertPostToGroup(groupName, postId) {
     this.redis.sadd(groupName, postId);
+  }
+  getPostByGroup(groupName) {
+    return new Promise((resolve) => {
+      this.redis.sinter(groupName, (err, res) => {
+        resolve(res);
+      });
+    })
   }
 };
 
